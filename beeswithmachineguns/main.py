@@ -55,7 +55,6 @@ commands:
     up_group.add_option('-k', '--key',  metavar="KEY",  nargs=1,
                         action='store', dest='key', type='string', 
                         help="The ssh key pair name to use to connect to the new servers.")
-
     up_group.add_option('-s', '--servers', metavar="SERVERS", nargs=1,
                         action='store', dest='servers', type='int', default=5,
                         help="The number of servers to start (default: 5).")
@@ -64,13 +63,13 @@ commands:
                         help="The security group to run the instances under (default: default).")
     up_group.add_option('-z', '--zone',  metavar="ZONE",  nargs=1,
                         action='store', dest='zone', type='string', default='us-east-1d',
-                        help="The availability zone to start the instances in (default: us-east-1d).")
-    up_group.add_option('-i', '--instance',  metavar="INSTANCE",  nargs=1,
-                        action='store', dest='instance', type='string', default='ami-ff17fb96',
-                        help="The instance-id to use for each server from (default: ami-ff17fb96).")
+                        help="The region and availability zone to start the instances in (default: us-east-1d).")
+    up_group.add_option('-i', '--imageid',  metavar="IMAGE",  nargs=1,
+                        action='store', dest='image', type='string', default='',
+                        help="The AMI id to use as a base for each server. (default: use region specific AMI's)")
     up_group.add_option('-l', '--login',  metavar="LOGIN",  nargs=1,
-                        action='store', dest='login', type='string', default='newsapps',
-                        help="The ssh username name to use to connect to the new servers (default: newsapps).")
+                        action='store', dest='login', type='string', default='ubuntu',
+                        help="The ssh username name to use to connect to the new servers (default: ubuntu).")
 
     parser.add_option_group(up_group)
 
@@ -104,7 +103,7 @@ commands:
         if options.group == 'default':
             print 'New bees will use the "default" EC2 security group. Please note that port 22 (SSH) is not normally open on this group. You will need to use to the EC2 tools to open it before you will be able to attack.'
 
-        bees.up(options.servers, options.group, options.zone, options.instance, options.login, options.key)
+        bees.up(options.servers, options.group, options.zone, options.image, options.login, options.key)
     elif command == "attack":
         if not options.url:
             parser.error("To run an attack you need to specify a url with -u")
