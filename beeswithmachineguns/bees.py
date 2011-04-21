@@ -296,12 +296,14 @@ def attack(url, n, c):
     params = []
 
     urls = url.split(",")
+    last_url = ""
     for i, instance in enumerate(instances):
+        last_url = urls[i % len(urls)] or last_url
         params.append({
             'i': i,
             'instance_id': instance.id,
             'instance_name': instance.public_dns_name,
-            'url': urls[i % len(urls)],
+            'url': last_url,
             'concurrent_requests': connections_per_instance,
             'num_requests': requests_per_instance,
             'username': username,
