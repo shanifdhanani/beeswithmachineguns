@@ -80,8 +80,7 @@ commands:
     # Required
     attack_group.add_option('-u', '--url', metavar="URL", nargs=1,
                         action='store', dest='url', type='string',
-                        help="URL of the target to attack.")
-
+                        help="URL of the target to attack. Comma-separated multiple URLs ok, will be handed to machines round-robin.")
     attack_group.add_option('-n', '--number', metavar="NUMBER", nargs=1,
                         action='store', dest='number', type='int', default=1000,
                         help="The number of total connections to make to the target (default: 1000).")
