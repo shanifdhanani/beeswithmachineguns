@@ -34,12 +34,7 @@ import urllib2
 
 import boto.ec2
 
-from Crypto.Util.randpool import RandomPool_DeprecationWarning
-import warnings
-warnings.filters.append(('ignore', None, RandomPool_DeprecationWarning, None, 0))
 import paramiko
-
-from Crypto import Random
 
 EC2_INSTANCE_TYPE = 't1.micro'
 EC2_REGIONAL_AMIS = {'us-east-1': 'ami-3202f25b', 'us-west-1': 'ami-f5bfefb0', 'eu-west-1': 'ami-3d1f2b49', 'ap-southeast-1': 'ami-f092eca2'}
@@ -83,7 +78,6 @@ def _prepare_instances(params):
     print "Seting up bee %s @ %s." % (params['instance_id'],  params['instance_ip'])
 
     time.sleep(20)
-    Random.atfork()
 
     try:
         client = paramiko.SSHClient()
@@ -230,8 +224,6 @@ def _attack(params):
     Intended for use with multiprocessing.
     """
     print 'Bee %i is joining the swarm.' % params['i']
-
-    Random.atfork()
 
     try:
         client = paramiko.SSHClient()
