@@ -75,18 +75,24 @@ def _get_pem_path(key):
     return os.path.expanduser('~/.ssh/%s.pem' % key)
 
 def _prepare_instances(params):
-    print "Seting up bee %s @ %s." % (params['instance_id'],  params['instance_ip'])
+    if params['instance_ip'] is None:
+        print "Instance IP was none. oh boo."
+        return False
+
+    print "Setting up bee %s @ %s." % (params['instance_id'],  params['instance_ip'])
 
     time.sleep(20)
 
     try:
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        print "Connecting to instance %s" % params['instance_ip']
         client.connect(
             params['instance_ip'],
             username=params['username'],
             key_filename=_get_pem_path(params['key_name']))
 
+        print "Installing goods"
         install_ab_stdin, install_ab_stdout, install_ab_stderr = client.exec_command('sudo apt-get install -y  %s' % PACKAGES_TO_INSTALL)
         ab_installation = install_ab_stdout.read()
         time.sleep(5)
@@ -146,7 +152,6 @@ def up(count, group, zone, image_id, username, key_name):
 
     for instance in reservation.instances:
         while instance.state != 'running':
-            print '.'
             time.sleep(5)
             instance.update()
 
@@ -154,8 +159,12 @@ def up(count, group, zone, image_id, username, key_name):
 
     params = []
     for instance in reservation.instances:
+        ip_address = instance.ip_address
+        if ip_address is None:
+            ip_address = socket.gethostbyname(instance.dns_name)
+
         params.append({
-            'instance_ip': instance.ip_address,
+            'instance_ip': ip_address,
             'instance_id': instance.id,
             'username': username,
             'key_name': key_name,
