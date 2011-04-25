@@ -358,6 +358,8 @@ def attack(url, n, c):
 
     params = []
 
+    print 'Stinging URL so it will be cached for the attack.'
+
     urls = url.split(",")
     last_url = ""
     for i, instance in enumerate(instances):
@@ -372,11 +374,8 @@ def attack(url, n, c):
             'username': username,
             'key_name': key_name,
         })
-
-    print 'Stinging URL so it will be cached for the attack.'
-
-    # Ping url so it will be cached for testing
-    urllib2.urlopen(url)
+        if last_url:
+            urllib2.urlopen(last_url)
 
     print 'Organizing the swarm.'
 
